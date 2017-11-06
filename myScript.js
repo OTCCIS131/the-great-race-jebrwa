@@ -1,81 +1,78 @@
-$(function () {
+$(function(){
     let vm = new Vue({
-        el: '#app',
-        data: {
-            racing: false,
-            winner: null,
-            blueBike: 0,
-            redBike: 0,
-            tick: 0,
-            interval: null
+       el: '#exciteBike',
+      data: {
+       racing: false,
+       winner: null,
+       redBike: 0,
+       blueBike: 0,
+       tick: 0,
+       intervall: null,
         },
-        computed: {
-            winning() {
-                if (this.blueBike == this.redBike) return null
+       methods: {
 
-                return this.blueBike > this.redBike ? 'blueBike' : 'redBike'
-            },
+           go() {
+               if (this.winner) {
+                   this.reset()
+                   return
+               }
+               this.racing = true
+               this.interval = setInterval(() => {
+                   this.moveRider()
 
-            rRStyle() {
-                return {
-                    left: `${this.redBike}vw`
-                }
-            },
-            rRClass() {
-                if (!this.winner) return
-                return this.winner == 'redBike' ? 'animated tada infinite winner' : 'animated hinge'
-            },
-            bBStyle() {
-                return {
-                    left: `${this.blueBike}vw`
-                }
-            },
-            bBClass() {
-                if (!this.winner) return
-                return this.winner == 'blueBike' ? 'animated tada infinite winner' : 'animated hinge'
-            }
-        },
-        methods: {
-            startRace() {
-                if (this.winner) {
-                    this.restart()
-                    return
-                }
-                this.racing = true
-                this.interval = setInterval(() => {
-                    this.moveRiders()
-                }, 50)
-            },
-            moveRiders() {
-                this.tick++
-                this.blueBike += (Math.random() >= .3) ? 1 : 0
-                this.redBike += (Math.random() >= .3) ? 1 : 0
-                this.winningRider()
-            },
-            winningRider() {
-                if (this.blueBike == this.redBike) return
+               }, 85)
+           },
+           moveRider() {
+               this.tick++
+               this.redBike += (Math.random() >= .4) ? 2 : 1
+               this.blueBike += (Math.random() >= .4) ? 2 : 1
+               this.decision()
+           },
+           decision() {
+               if (this.redBike == this.blueBike) return
 
-                if (this.blueBike >= 90) {
-                    this.showWinner('blueBike')
-                }
+               if (this.redBike >= 87) {
+                   this.showWin('redBike')
+               }
 
-                if (this.redBike >= 90) {
-                    this.showWinner('redBike')
-                }
-            },
-            showWinner(rider) {
-                clearInterval(this.interval)
-                this.interval = null
-                this.racing = false
-                this.winner = rider
-            },
-            resetBikes() {
-                this.racing = false
-                this.winner = null
-                this.blueBike = 0
-                this.redBike = 0
-                this.tick = 0
-            }
-        }
+               if (this.blueBike >= 87) {
+                   this.showWin('blueBike')
+               }
+           },
+           showWin(rider) {
+               clearInterval(this.interval)
+               this.interval = null
+               this.racing = false
+               this.winner = rider
+           },
+           reset() {
+               this.racing = false
+               this.winner = null
+               this.redBike = 0
+               this.blueBike = 0
+               this.tick = 0
+           }
+       },
+       computed: {
+
+           redStyles() {
+               return {
+                   left: `${this.redBike}vw`
+               }
+           },
+           redClass() {
+               if (!this.winner) return
+               return this.winner == 'redBike' ? 'animated flash infinite winner' : 'animated zoomOutRight'
+           },
+           blueStyles() {
+               return {
+                   left: `${this.blueBike}vw`
+               }
+           },
+           blueClass() {
+               if (!this.winner) return
+               return this.winner == 'blueBike' ? 'animated flash infinite winner' : 'animated zoomOutRight'
+           }
+       }
     })
 })
